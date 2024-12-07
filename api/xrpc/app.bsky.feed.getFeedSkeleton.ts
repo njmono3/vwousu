@@ -102,12 +102,14 @@ const sample_feed = `3lcpsnz5ewk2y2024-12-07 22:31:59
 3lc2c3ewjfs2i2024-11-29 09:09:20`.split("\n").map(s => ({ "post": "at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/" + s.replace(/2024-.+/, "") }));
 
 export default function (req: NowRequest, res: NowResponse) {
-    res.send({limit: req.limit, cursor: req.cursor, feed: req.feed, rand: Math.random()});
-    return;
+    //res.send({limit: req.limit, cursor: req.cursor, feed: req.feed, rand: Math.random()});
+    //return;"feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))
     const limit = !Number.isNaN(req.limit*1) ? req.limit*1 : 50;
     const cursor = !Number.isNaN(req.cursor*1) ? req.cursor*1 : 0;
     res.send({
-        ...(cursor + limit < sample_feed.length ? { "cursor": cursor + limit } : {}),
-        "feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))
+        
+        //...(cursor + limit < sample_feed.length ? { "cursor": cursor + limit } : {}),
+        //"feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))Math.min(cursor + limit, sample_feed.length)cursor
+        "feed": sample_feed.slice(0, 30)
     });
 }
