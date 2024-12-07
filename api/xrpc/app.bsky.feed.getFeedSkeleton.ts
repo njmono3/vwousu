@@ -11,12 +11,12 @@ export default function (req: NowRequest, res: NowResponse) {
     const limit = !Number.isNaN(req.limit*1) ? req.limit*1 : 50;
     const original_feed = [...Array(100).keys()].map(i => feed_seed[i%feed_seed.length]);
     if (req.cursor) {
+        res.send({ "feed": [
+            { "post": "at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lcpnik3kb22h" }
+        ] });
+    } else {
         res.send({
             "feed": original_feed.slice(0, limit)
         });
-    } else {
-        res.send({ "feed": [
-            { "post": "at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lcpnik3kb22h" }
-        ] })
     }
 }
