@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/xrpc/:path*",
+      "destination": "https://api.vwousu.com/xrpc/:path*"
+    }
+  ]
+}
