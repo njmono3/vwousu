@@ -102,7 +102,7 @@ const sample_feed = `3lcpsnz5ewk2y2024-12-07 22:31:59
 3lc2c3ewjfs2i2024-11-29 09:09:20`.split("\n").map(s => ({ "post": "at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/" + s.replace(/2024-.+/, "") }));
 
 export default function (req: NowRequest, res: NowResponse) {
-    res.send({value: req, rand: Math.random()});
+    res.send({limit: req.limit, cursor: req.cursor, feed: req.feed, rand: Math.random()});
     return;
     const limit = !Number.isNaN(req.limit*1) ? req.limit*1 : 50;
     const cursor = !Number.isNaN(req.cursor*1) ? req.cursor*1 : 0;
