@@ -103,13 +103,9 @@ const sample_feed = `3lcpsnz5ewk2y2024-12-07 22:31:59
 
 export default function (req: NowRequest, res: NowResponse) {
     const limit = !Number.isNaN(req.limit*1) ? req.limit*1 : 50;
-    if (req.cursor) {
-        res.send({ "feed": [
-            { "post": "at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lcpnik3kb22h" }
-        ] });
-    } else {
-        res.send({
-            "feed": sample_feed.slice(0, limit)
-        });
-    }
+    const cursor = !Number.isNaN(req.cursor*1) ? req.cursor*1 : 0;
+    res.send({
+        ...(cursor + limit < sample_feed.length ? { "cursor": cursor + limit } : {})
+        "feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))
+    });
 }
