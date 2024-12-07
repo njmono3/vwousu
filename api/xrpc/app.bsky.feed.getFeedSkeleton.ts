@@ -105,7 +105,6 @@ export default function (req: NowRequest, res: NowResponse) {
     const limit = !Number.isNaN(req.limit*1) ? req.limit*1 : 50;
     const cursor = !Number.isNaN(req.cursor*1) ? req.cursor*1 : 0;
     res.send({
-        "req": req,
         ...(cursor + limit < sample_feed.length ? { "cursor": cursor + limit } : {}),
         "feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))
     });
