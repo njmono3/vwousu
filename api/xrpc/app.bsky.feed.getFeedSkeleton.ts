@@ -22,6 +22,7 @@ at://did:plc:jmuiqbywxznpru4snxj4qgkm/app.bsky.feed.post/3l7t6iqz4cs2u
 at://did:plc:jmuiqbywxznpru4snxj4qgkm/app.bsky.feed.post/3l7sxsm6ine23
 at://did:plc:jmuiqbywxznpru4snxj4qgkm/app.bsky.feed.post/3l6zxcosxsl24
 at://did:plc:jmuiqbywxznpru4snxj4qgkm/app.bsky.feed.post/3l6d37vvopd2r
+at://did:plc:jmuiqbywxznpru4snxj4qgkm/app.bsky.feed.post/3lbnwmzu72k2f
 at://did:plc:g3kuxfrrqt55c6tk4ju23db2/app.bsky.feed.post/3klvieciu522i
 at://did:plc:uzelqdhwmhbcuv37dyexa75a/app.bsky.feed.post/3lago5jaj6j23
 at://did:plc:ckyq324bohqubf5vgxdvkwnx/app.bsky.feed.post/3kkxf7x44qn2p
@@ -29,9 +30,18 @@ at://did:plc:ybdaethqnoqfpfzuxir7sbv6/app.bsky.feed.post/3l6tbyirdut25
 at://did:plc:ybdaethqnoqfpfzuxir7sbv6/app.bsky.feed.post/3kksy5ylchp2h
 at://did:plc:jmvkmo7fvhfw2idu7da5hr55/app.bsky.feed.post/3kktcd5hy6m2z
 at://did:plc:2izshducesfujlj4msbopnts/app.bsky.feed.post/3kkteh4oekf2o
-at://did:plc:3gmaf33pxbbrcslogjrl3lfu/app.bsky.feed.post/3knizamitml2l`.split("\n").map(p => ({ "post": p }));
+at://did:plc:3gmaf33pxbbrcslogjrl3lfu/app.bsky.feed.post/3knizamitml2l
+at://did:plc:ic6u5b43d34lvefuujmke7eg/app.bsky.feed.post/3la6nk77tax2w
+at://did:plc:ic6u5b43d34lvefuujmke7eg/app.bsky.feed.post/3l6r4crnuui2b
+at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lcqer5wafs2p
+at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lcqex7ukx22p
+at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lcqexgmtts2p
+at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lcqexpqnqc2p
+at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lcpnik3kb22h
+at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lbvm7fyysc25
+at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lbl644qg3k2p`.split("\n").map(p => ({ "post": p }));
 
-const sample_feed = [...Array(feed_seed.length)].map(_ => feed_seed.splice(Math.floor(Math.random() * feed_seed.length), 1)[0]);
+const sample_feed = [...Array(Math.min(5, feed_seed.length))].map(_ => feed_seed.splice(Math.floor(Math.random() * feed_seed.length), 1)[0]);
 
 export default function (req: NowRequest, res: NowResponse) {
     //res.send({limit: req.limit, cursor: req.cursor, feed: req.feed, rand: Math.random()});
@@ -39,9 +49,8 @@ export default function (req: NowRequest, res: NowResponse) {
     const limit = !Number.isNaN(req.limit*1) ? req.limit*1 : 50;
     const cursor = !Number.isNaN(req.cursor*1) ? req.cursor*1 : 0;
     res.send({
-        
         //...(cursor + limit < sample_feed.length ? { "cursor": cursor + limit } : {}),
-        //"feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))Math.min(cursor + limit, sample_feed.length)cursor
+        //"feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))
         "feed": sample_feed.slice(0, 30)
     });
 }
