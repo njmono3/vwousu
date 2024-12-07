@@ -1,6 +1,6 @@
 import { NowRequest, NowResponse } from "@vercel/node";
 
-const sample_feed = `at://did:plc:szc2rdkyjimt3uvwps6k3gc2/app.bsky.feed.post/3kvy4pb5qki2j
+const feed_seed = `at://did:plc:szc2rdkyjimt3uvwps6k3gc2/app.bsky.feed.post/3kvy4pb5qki2j
 at://did:plc:szc2rdkyjimt3uvwps6k3gc2/app.bsky.feed.post/3lc5kix27v224
 at://did:plc:szc2rdkyjimt3uvwps6k3gc2/app.bsky.feed.post/3klnpfgfayv2c
 at://did:plc:szc2rdkyjimt3uvwps6k3gc2/app.bsky.feed.post/3krl5aev2iu24
@@ -29,8 +29,9 @@ at://did:plc:ybdaethqnoqfpfzuxir7sbv6/app.bsky.feed.post/3l6tbyirdut25
 at://did:plc:ybdaethqnoqfpfzuxir7sbv6/app.bsky.feed.post/3kksy5ylchp2h
 at://did:plc:jmvkmo7fvhfw2idu7da5hr55/app.bsky.feed.post/3kktcd5hy6m2z
 at://did:plc:2izshducesfujlj4msbopnts/app.bsky.feed.post/3kkteh4oekf2o
-at://did:plc:3gmaf33pxbbrcslogjrl3lfu/app.bsky.feed.post/3knizamitml2l
-`.split("\n").map(p => ({ "post": p }));
+at://did:plc:3gmaf33pxbbrcslogjrl3lfu/app.bsky.feed.post/3knizamitml2l`.split("\n").map(p => ({ "post": p }));
+
+const sample_feed = [...Array(feed_seed.length)].map(_ => feed_seed.splice(Math.floor(Math.random() * feed_seed.length), 1)[0]);
 
 export default function (req: NowRequest, res: NowResponse) {
     //res.send({limit: req.limit, cursor: req.cursor, feed: req.feed, rand: Math.random()});
