@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/api/xrpc/:path*",
-      "destination": "https://api.vwousu.com/xrpc/:path*"
+      "source": "/xrpc/:path*",
+      "destination": "https://vwousu.vercel.app/api/xrpc/:path*"
     }
   ]
 }
