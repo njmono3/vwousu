@@ -5,6 +5,9 @@ export default function (req: NowRequest, res: NowResponse) {
         "feed": [
             {
                 "post": "at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lcev26u2ts25"
+            },
+            {
+                "post": "at://294aria.bsky.social/post/3lcck6d3dzc2w"
             }
         ]
     });
