@@ -41,9 +41,9 @@ at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lcpnik3kb22h
 at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lbvm7fyysc25
 at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lbl644qg3k2p`.split("\n").map(p => ({ "post": p }));
 
-const sample_feed = [...Array(Math.min(5, feed_seed.length))].map(_ => feed_seed.splice(Math.floor(Math.random() * feed_seed.length), 1)[0]);
 
 export default function (req: NowRequest, res: NowResponse) {
+    const sample_feed = [...Array(Math.min(5, feed_seed.length))].map(_ => feed_seed.splice(Math.floor(Math.random() * feed_seed.length), 1)[0]);
     //res.send({limit: req.limit, cursor: req.cursor, feed: req.feed, rand: Math.random()});
     //return;"feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))
     const limit = !Number.isNaN(req.limit*1) ? req.limit*1 : 50;
