@@ -54,7 +54,7 @@ export default function (req: NowRequest, res: NowResponse) {
         const limit = !Number.isNaN(req.query.limit * 1) ? req.query.limit * 1 : 50;
         const cursor = !Number.isNaN(req.query.cursor * 1) ? req.query.cursor * 1 : 0;
         res.send({
-            ...(cursor + limit < sample_feed.length ? { "cursor": cursor + limit } : {}),
+            ...(cursor + limit < sample_feed.length ? { "cursor": (cursor + limit) + "" } : {}),
             "feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))
         });
     }
