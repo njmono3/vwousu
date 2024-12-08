@@ -1,6 +1,6 @@
 import { NowRequest, NowResponse } from "@vercel/node";
 
-const feed_seed_seed = `at://did:plc:szc2rdkyjimt3uvwps6k3gc2/app.bsky.feed.post/3kvy4pb5qki2j
+const gacha_seed = `at://did:plc:szc2rdkyjimt3uvwps6k3gc2/app.bsky.feed.post/3kvy4pb5qki2j
 at://did:plc:szc2rdkyjimt3uvwps6k3gc2/app.bsky.feed.post/3lc5kix27v224
 at://did:plc:szc2rdkyjimt3uvwps6k3gc2/app.bsky.feed.post/3klnpfgfayv2c
 at://did:plc:szc2rdkyjimt3uvwps6k3gc2/app.bsky.feed.post/3krl5aev2iu24
@@ -42,15 +42,20 @@ at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lbvm7fyysc25
 at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.post/3lbl644qg3k2p`;
 
 export default function (req: NowRequest, res: NowResponse) {
-    const feed_seed = feed_seed_seed.split("\n").map(p => ({ "post": p }));
-    const sample_feed = [...Array(Math.min(5, feed_seed.length))].map(_ => feed_seed.splice(Math.floor(Math.random() * feed_seed.length), 1)[0]);
-    //res.send({limit: req.limit, cursor: req.cursor, feed: req.feed, rand: Math.random()});
-    //return;"feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))
-    const limit = !Number.isNaN(req.limit*1) ? req.limit*1 : 50;
-    const cursor = !Number.isNaN(req.cursor*1) ? req.cursor*1 : 0;
-    res.send({
-        //...(cursor + limit < sample_feed.length ? { "cursor": cursor + limit } : {}),
-        //"feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))
-        "feed": sample_feed.slice(0, 30)
-    });
+    if (req.query.feed === "at://did:plc:tpkejgkmpl7xz322emd5lwy2/app.bsky.feed.generator/522suuch4nluv") {
+        const feed_seed = gacha_seed.split("\n").map(p => ({ "post": p }));
+        const sample_feed = [...Array(Math.min(5, feed_seed.length))].map(_ => feed_seed.splice(Math.floor(Math.random() * feed_seed.length), 1)[0]);
+        res.send({
+            "feed": sample_feed
+        });
+    } else {
+        const feed_seed = gacha_seed.split("\n").map(p => ({ "post": p }));
+        const sample_feed = feed_seed;
+        const limit = !Number.isNaN(req.query.limit * 1) ? req.query.limit * 1 : 50;
+        const cursor = !Number.isNaN(req.query.cursor * 1) ? req.query.cursor * 1 : 0;
+        res.send({
+            ...(cursor + limit < sample_feed.length ? { "cursor": cursor + limit } : {}),
+            "feed": sample_feed.slice(cursor, Math.min(cursor + limit, sample_feed.length))
+        });
+    }
 }
