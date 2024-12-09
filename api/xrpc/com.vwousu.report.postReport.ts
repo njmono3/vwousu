@@ -77,8 +77,8 @@ function checkSessionBsky(stored_connection, req, res) {
                     .catch(err => {
                         return res.send(err);
                     })
-                    .then(res => {
-                        return res.send();
+                    .then(response => {
+                        return response.json();
                     })
                     .then(sess => {
                         vw_connection.push({
@@ -113,6 +113,7 @@ function postRepo(req, res) {
                 },
                 body: JSON.stringify(req_body)
             })
+                .catch(err => res.send(err))
                 .then(response => response.json())
                 .then(res_json => {
                     if (req_body.collection.match(/^com\.vwousu\.report\./)) {
