@@ -17,6 +17,8 @@ export default function POST(req: NowRequest, res: NowResponse) {
         res.json({ error: "Invalid Request" });
         return;
     }
+    res.json({ hoge: req.body, fuga: req.body.collection });
+    return;
     if (req.body.collection.match(/^com\.vwousu\.report\./)) {
         if (vw_connection.length === 0) {
             fetchBskySession(req, res);
