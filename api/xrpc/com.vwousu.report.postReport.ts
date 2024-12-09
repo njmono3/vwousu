@@ -78,10 +78,6 @@ function checkSessionBsky(stored_connection, req, res) {
                         "Authorization": `Bearer ${stored_connection.sess.refreshJwt}`
                     }
                 })
-                    .catch(err => {
-                        vw_connection.pop();
-                        if (err) return res.json(err);
-                    })
                     .then(response => {
                         return response.json();
                     })
@@ -117,9 +113,6 @@ function postRepo(req, res) {
                 },
                 body: JSON.stringify(req_body)
             })
-                .catch(err => {
-                    if(err) res.json(err);
-                })
                 .then(response => response.json())
                 .then(res_json => {
                     if (req_body.collection.match(/^com\.vwousu\.report\./)) {
@@ -128,9 +121,6 @@ function postRepo(req, res) {
                         res.json(res_json);
                     }
                 });
-        })
-        .catch(err => {
-            if(err) res.json(err);
         });
     return;
 }
@@ -158,9 +148,6 @@ function postRepoStore(req_body, post_info, res) {
         },
         body: JSON.stringify(repo_body)
     })
-        .catch(err => {
-            if(err) res.json(err);
-        })
         .then(_ => {
             res.json(post_info);
         });
