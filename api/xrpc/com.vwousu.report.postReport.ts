@@ -115,7 +115,7 @@ function postRepo(req, res) {
             })
                 .then(response => response.json())
                 .then(res_json => {
-                    if (req.body.collection.match(/^com\.vwousu\.report\./)) {
+                    if (req_body.collection.match(/^com\.vwousu\.report\./)) {
                         postRepoStore(req_body, res_json, res);
                     }
                 });
