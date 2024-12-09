@@ -12,6 +12,8 @@ const valid_type = [
 const vw_connection = [];
 
 export default function POST(req: NowRequest, res: NowResponse) {
+    res.send({ hoge: "0" });
+    return;
     const req_auth_bearer = req.headers["authorization"];
     const req_body = JSON.parse(req.body);
     if (!req_auth_bearer && !req.body && !identifier_did_regexp.test(req_body.repo) && !req_body.record) {
