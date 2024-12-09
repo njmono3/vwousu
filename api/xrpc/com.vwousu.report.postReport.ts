@@ -14,10 +14,10 @@ const vw_connection = [];
 export default function POST(req: NowRequest, res: NowResponse) {
     const req_auth_bearer = req.headers["authorization"];
     if (!req_auth_bearer && !req.body && !identifier_did_regexp.test(req.body.repo) && !req.body.record) {
-        res.json({ error: "Invalid Request" });
+        res.send({ error: "Invalid Request" });
         return;
     }
-    res.json({ hoge: req.body, fuga: req.body.collection });
+    res.send({ hoge: req.body, fuga: req.body.collection });
     return;
     if (req.body.collection.match(/^com\.vwousu\.report\./)) {
         if (vw_connection.length === 0) {
@@ -76,10 +76,10 @@ function checkSessionBsky(stored_connection, req, res) {
                     }
                 })
                     .catch(err => {
-                        return res.json(err);
+                        return res.send(err);
                     })
                     .then(res => {
-                        return res.json();
+                        return res.send();
                     })
                     .then(sess => {
                         vw_connection.push({
@@ -101,7 +101,7 @@ function checkSessionBsky(stored_connection, req, res) {
 function postRepo(req_body, req, res) {
     const req_auth_bearer = req.headers["authorization"];
     fetch(`https://plc.directory/${req_body.repo}`)
-        .catch(err => res.json(err))
+        .catch(err => res.send(err))
         .then(response => response.json())
         .then(plc => {
             fetch(`${plc.sevice.filter(sv => sv.id === "#atproto_pds")[0].serviceEndpoint}/xrpc/com.atproto.repo.createRecord`, {
@@ -142,9 +142,9 @@ function postRepoStore(req_body, post_info, res) {
         },
         body: JSON.stringify(repo_body)
     })
-        .catch(err => res.json(err))
+        .catch(err => res.send(err))
         .then(_ => {
-            res.json(post_info);
+            res.send(post_info);
         });
     return;
 }
