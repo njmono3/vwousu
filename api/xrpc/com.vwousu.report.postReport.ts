@@ -117,6 +117,8 @@ function postRepo(req, res) {
                 .then(res_json => {
                     if (req_body.collection.match(/^com\.vwousu\.report\./)) {
                         postRepoStore(req_body, res_json, res);
+                    } else {
+                        res.send(res_json);
                     }
                 });
         });
