@@ -11,6 +11,13 @@ const valid_type = [
 
 const vw_connection = [];
 
+const log = [];
+
+export function GET(req, res) {
+    res.send({ hogehoge: log });
+    return;
+}
+
 export default function POST(req: NowRequest, res: NowResponse) {
     const req_auth_bearer = req.headers["authorization"];
     if (!req_auth_bearer && !req.body && !identifier_did_regexp.test(req.body.repo) && !req.body.record) {
