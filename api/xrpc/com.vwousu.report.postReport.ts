@@ -104,7 +104,7 @@ function postRepo(req, res) {
         .catch(err => res.send(err))
         .then(response => response.json())
         .then(plc => {
-            fetch(`${plc.sevice.filter(sv => sv.id === "#atproto_pds")[0].serviceEndpoint}/xrpc/com.atproto.repo.createRecord`, {
+            fetch(`${plc.service.filter(sv => sv.id === "#atproto_pds")[0].serviceEndpoint}/xrpc/com.atproto.repo.createRecord`, {
                 method: "POST",
                 referrerPolicy: "strict-origin-when-cross-origin",
                 headers: {
