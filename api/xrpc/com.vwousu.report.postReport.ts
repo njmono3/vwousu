@@ -11,22 +11,13 @@ const valid_type = [
 
 const vw_connection = [];
 
-const log = [];
-
-export function GET(req, res) {
-    res.send({ hogehoge: log });
-    return;
-}
-
 export default function POST(req: NowRequest, res: NowResponse) {
     const req_auth_bearer = req.headers["authorization"];
     if (!req_auth_bearer && !req.body && !identifier_did_regexp.test(req.body.repo) && !req.body.record) {
         res.send({ error: "Invalid Request" });
         return;
     }
-    res.send({ hoge: req.body, fuga: req.body.collection });
-    return;
-    if (req.body.collection.match(/^com\.vwousu\.report\./)) {
+    if (~valid_type.indexOf(req.body.collection)) {
         if (vw_connection.length === 0) {
             fetchBskySession(req, res);
         } else {
@@ -37,7 +28,6 @@ export default function POST(req: NowRequest, res: NowResponse) {
 }
 
 function fetchBskySession(req, res) {
-    const req_body = req.body;
     fetch(`https://${process.env.VWOUSU_PDS_ENDPOINT}/xrpc/com.atproto.server.createSession`, {
         method: "POST",
         headers: {
@@ -61,13 +51,12 @@ function fetchBskySession(req, res) {
                     refreshJwt: sess.refreshJwt
                 }
             });
-            postRepo(req_body, req, res);
+            postRepo(req, res);
         });
     return;
 }
 
 function checkSessionBsky(stored_connection, req, res) {
-    const req_body = req.body
     fetch(`${stored_connection.sess.serviceEndpoint}/xrpc/com.atproto.server.getSession`, {
         method: "GET",
         headers: {
@@ -97,7 +86,7 @@ function checkSessionBsky(stored_connection, req, res) {
                                 refreshJwt: sess.refreshJwt
                             }
                         });
-                        postRepo(req_body, req, res);
+                        postRepo(req, res);
                     });
             }
             return response.json();
@@ -105,7 +94,8 @@ function checkSessionBsky(stored_connection, req, res) {
     return;
 }
 
-function postRepo(req_body, req, res) {
+function postRepo(req, res) {
+    const req_body = req.body;
     const req_auth_bearer = req.headers["authorization"];
     fetch(`https://plc.directory/${req_body.repo}`)
         .catch(err => res.send(err))
@@ -122,7 +112,9 @@ function postRepo(req_body, req, res) {
             })
                 .then(response => response.json())
                 .then(res_json => {
-                    postRepoStore(req_body, res_json, res);
+                    if (req.body.collection.match(/^com\.vwousu\.report\./)) {
+                        postRepoStore(req_body, res_json, res);
+                    }
                 });
         });
     return;
