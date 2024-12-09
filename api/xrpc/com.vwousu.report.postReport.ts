@@ -12,12 +12,10 @@ const valid_type = [
 const vw_connection = [];
 
 export default function POST(req: NowRequest, res: NowResponse) {
-    res.send({ hoge: "0" });
-    return;
     const req_auth_bearer = req.headers["authorization"];
     const req_body = JSON.parse(req.body);
     if (!req_auth_bearer && !req.body && !identifier_did_regexp.test(req_body.repo) && !req_body.record) {
-        res.send({ error: "Invalid Request" });
+        res.json({ error: "Invalid Request" });
         return;
     }
     if (~valid_type.indexOf(req_body.collection)) {
@@ -31,7 +29,7 @@ export default function POST(req: NowRequest, res: NowResponse) {
             postRepo(req, res);
         }
     } else {
-        res.send({ error: "Invalid Type" });
+        res.json({ error: "Invalid Type" });
     }
     return;
 }
@@ -96,7 +94,7 @@ function checkSessionBsky(stored_connection, req, res) {
                     })
                     .catch(err => {
                         vw_connection.pop();
-                        return res.send(err);
+                        return res.json(err);
                     });
             }
             return response.json();
@@ -124,18 +122,18 @@ function postRepo(req, res) {
                     if (req_body.collection.match(/^com\.vwousu\.report\./)) {
                         postRepoStore(req_body, res_json, res);
                     } else {
-                        res.send(res_json);
+                        res.json(res_json);
                     }
                 })
-                .catch(err => res.send(err));
+                .catch(err => res.json(err));
         })
-        .catch(err => res.send(err));
+        .catch(err => res.json(err));
     return;
 }
 
 function postRepoStore(req_body, post_info, res) {
-    res.send({ hoge: "Hello", fuga: post_info });
-    return;
+    //res.json({ hoge: "Hello", fuga: post_info });
+    //return;
     const repo_body = req_body;
     repo_body.collection = req_body.collection + "Store";
     repo_body.repo = vwousu_did;
@@ -157,8 +155,8 @@ function postRepoStore(req_body, post_info, res) {
         body: JSON.stringify(repo_body)
     })
         .then(_ => {
-            res.send(post_info);
+            res.json(post_info);
         })
-        .catch(err => res.send(err));
+        .catch(err => res.json(err));
     return;
 }
