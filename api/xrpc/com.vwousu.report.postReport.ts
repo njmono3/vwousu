@@ -132,7 +132,7 @@ function postRepo(req, res) {
 }
 
 function postRepoStore(req_body, post_info, res) {
-    res.send({ hoge: post_info });
+    res.send({ hoge: "Hello", fuga: post_info });
     return;
     const repo_body = req_body;
     repo_body.collection = req_body.collection + "Store";
