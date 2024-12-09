@@ -19,10 +19,14 @@ export default function POST(req: NowRequest, res: NowResponse) {
         return;
     }
     if (~valid_type.indexOf(req_body.collection)) {
-        if (vw_connection.length === 0) {
-            fetchBskySession(req, res);
+        if (req_body.collection.match(/^com\.vwousu\.report\./)) {
+            if (vw_connection.length === 0) {
+                fetchBskySession(req, res);
+            } else {
+                checkSessionBsky(vw_connection[0], req, res);
+            }
         } else {
-            checkSessionBsky(vw_connection[0], req, res);
+            postRepo(req, res);
         }
     } else {
         res.send({ error: "Invalid Type" });
@@ -75,6 +79,7 @@ function checkSessionBsky(stored_connection, req, res) {
                     }
                 })
                     .catch(err => {
+                        vw_connection.pop();
                         return res.send(err);
                     })
                     .then(response => {
