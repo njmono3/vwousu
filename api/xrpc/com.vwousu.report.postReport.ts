@@ -13,16 +13,19 @@ const vw_connection = [];
 
 export default function POST(req: NowRequest, res: NowResponse) {
     const req_auth_bearer = req.headers["authorization"];
-    if (!req_auth_bearer && !req.body && !identifier_did_regexp.test(req.body.repo) && !req.body.record) {
+    const req_body = JSON.parse(req.body);
+    if (!req_auth_bearer && !req.body && !identifier_did_regexp.test(req_body.repo) && !req_body.record) {
         res.send({ error: "Invalid Request" });
         return;
     }
-    if (~valid_type.indexOf(req.body.collection)) {
+    if (~valid_type.indexOf(req_body.collection)) {
         if (vw_connection.length === 0) {
             fetchBskySession(req, res);
         } else {
             checkSessionBsky(vw_connection[0], req, res);
         }
+    } else {
+        res.send({ error: "Invalid Type" });
     }
     return;
 }
@@ -95,7 +98,7 @@ function checkSessionBsky(stored_connection, req, res) {
 }
 
 function postRepo(req, res) {
-    const req_body = req.body;
+    const req_body = JSON.parse(req.body);
     const req_auth_bearer = req.headers["authorization"];
     fetch(`https://plc.directory/${req_body.repo}`)
         .catch(err => res.send(err))
