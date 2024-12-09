@@ -78,10 +78,6 @@ function checkSessionBsky(stored_connection, req, res) {
                         "Authorization": `Bearer ${stored_connection.sess.refreshJwt}`
                     }
                 })
-                    .catch(err => {
-                        vw_connection.pop();
-                        return res.send(err);
-                    })
                     .then(response => {
                         return response.json();
                     })
@@ -95,6 +91,10 @@ function checkSessionBsky(stored_connection, req, res) {
                             }
                         });
                         postRepo(req, res);
+                    })
+                    .catch(err => {
+                        vw_connection.pop();
+                        return res.send(err);
                     });
             }
             return response.json();
@@ -106,7 +106,6 @@ function postRepo(req, res) {
     const req_body = JSON.parse(req.body);
     const req_auth_bearer = req.headers["authorization"];
     fetch(`https://plc.directory/${req_body.repo}`)
-        .catch(err => res.send(err))
         .then(response => response.json())
         .then(plc => {
             fetch(`${plc.service.filter(sv => sv.id === "#atproto_pds")[0].serviceEndpoint}/xrpc/com.atproto.repo.createRecord`, {
@@ -118,7 +117,6 @@ function postRepo(req, res) {
                 },
                 body: JSON.stringify(req_body)
             })
-                .catch(err => res.send(err))
                 .then(response => response.json())
                 .then(res_json => {
                     if (req_body.collection.match(/^com\.vwousu\.report\./)) {
@@ -126,8 +124,10 @@ function postRepo(req, res) {
                     } else {
                         res.send(res_json);
                     }
-                });
-        });
+                })
+                .catch(err => res.send(err));
+        })
+        .catch(err => res.send(err));
     return;
 }
 
@@ -154,9 +154,9 @@ function postRepoStore(req_body, post_info, res) {
         },
         body: JSON.stringify(repo_body)
     })
-        .catch(err => res.send(err))
         .then(_ => {
             res.send(post_info);
-        });
+        })
+        .catch(err => res.send(err));
     return;
 }
