@@ -5,8 +5,7 @@ const vwousu_did = "did:plc:kyso36rtx6wlziqb7t4mctzm";
 const sess_body = { identifier: vwousu_did, password: process.env.BSKY_APP_PASSWORD };
 
 const valid_type = [
-    "com.vwousu.report.actor",
-    "com.vwousu.graph.fave"
+    "com.vwousu.report.actor"
 ];
 
 const vw_connection = [];
@@ -23,17 +22,12 @@ export default function POST(req: NowRequest, res: NowResponse) {
     }
     console.log(req_auth_bearer);
     if (~valid_type.indexOf(req_body.collection)) {
-        if (req_body.collection.match(/^com\.vwousu\.report\./)) {
-            if (vw_connection.length === 0) {
-                console.log("start process [report-createSess]");
-                fetchBskySession(req, res);
-            } else {
-                console.log("start process [report-refreshSess]");
-                checkSessionBsky(vw_connection[0], req, res);
-            }
+        if (vw_connection.length === 0) {
+            console.log("start process [report-createSess]");
+            fetchBskySession(req, res);
         } else {
-            console.log("start process [graph.fave]");
-            postRepo(req, res);
+            console.log("start process [report-refreshSess]");
+            checkSessionBsky(vw_connection[0], req, res);
         }
     } else {
         console.log("the type is invalid");
@@ -67,7 +61,7 @@ function fetchBskySession(req, res) {
                     refreshJwt: sess.refreshJwt
                 }
             });
-            postRepo(req, res);
+            postRepoStore(req, res);
         })
         .catch(err => {
             console.log(err);
@@ -103,7 +97,7 @@ function checkSessionBsky(stored_connection, req, res) {
                                 refreshJwt: sess.refreshJwt
                             }
                         });
-                        postRepo(req, res);
+                        postRepoStore(req, res);
                     });
             }
             return response.json();
@@ -111,66 +105,18 @@ function checkSessionBsky(stored_connection, req, res) {
     return;
 }
 
-function postRepo(req, res) {
-    console.log("start process posting report");
-    console.log(req.headers);
-    const req_body = JSON.parse(req.body);
-    const req_auth_bearer = req.headers["x-vercel-proxy-signature"] || req.headers["authorization"];
-    if (!req_auth_bearer) {
-        res.send({ hoge: "when I droped the auth" });
-        return;
-    } else {
-        console.log(req_auth_bearer);
-    }
-    fetch(`https://plc.directory/${req_body.repo}`)
-        .then(response => response.json())
-        .then(plc => {
-            console.log(plc);
-            fetch(`${plc.service.filter(sv => sv.id === "#atproto_pds")[0].serviceEndpoint}/xrpc/com.atproto.repo.createRecord`, {
-                method: "POST",
-                referrerPolicy: "strict-origin-when-cross-origin",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": req_auth_bearer
-                },
-                body: JSON.stringify(req_body)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        console.log(response);
-                        console.log(req_auth_bearer);
-                        response.json().then(obj => console.log(obj));
-                        throw new Error("post is rejected");
-                    }
-                    return response.json();
-                })
-                .then(res_json => {
-                    console.log("success [post user]");
-                    if (req_body.collection.match(/^com\.vwousu\.report\./)) {
-                        postRepoStore(req_body, res_json, res);
-                    } else {
-                        console.log(res_json);
-                        res.json(res_json);
-                    }
-                })
-                .catch(err => { 
-                    console.log(err);
-                    res.send({ error: "post is rejected" });
-                });
-        });
-    return;
-}
-
-function postRepoStore(req_body, post_info, res) {
+function postRepoStore(req, res) {
     console.log("start process store report");
-    const repo_body = req_body;
-    repo_body.collection = req_body.collection + "Store";
+    const req_body = JSON.parse(req.body);
+    const post_info = req_body.post;
+    const repo_body = req_body.target;
+    repo_body.collection = req_body.target.collection + "Store";
     repo_body.repo = vwousu_did;
     repo_body.rkey = post_info.uri.split("/").pop();
     repo_body.record = {
-        ...req_body.record,
+        ...req_body.target.record,
         $type: repo_body.collection,
-        originRepo: req_body.repo,
+        originRepo: req_body.target.repo,
         originCid: post_info.cid
     };
 
