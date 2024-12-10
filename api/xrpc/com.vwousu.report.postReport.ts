@@ -19,7 +19,7 @@ export default function POST(req: NowRequest, res: NowResponse) {
         res.json({ error: "Invalid Request" });
         return;
     }
-    if (~valid_type.indexOf(req_body.target.collection)) {
+    if (req_body.target.collection.match(/^com\.vwousu(\.[^.]+){2,}/)) {
         if (vw_connection.length === 0) {
             console.log("start process [report-createSess]");
             fetchBskySession(req, res);
@@ -51,6 +51,8 @@ function fetchBskySession(req, res) {
         })
         .then(sess => {
             console.log({ connection: sess });
+            for (;vw_connection.length;)
+                vw_connection.pop();
             vw_connection.push({
                 sess: {
                     did: sess.did,
@@ -87,6 +89,8 @@ function checkSessionBsky(stored_connection, req, res) {
                         return response.json();
                     })
                     .then(sess => {
+                        for (;vw_connection.length;)
+                            vw_connection.pop();
                         vw_connection.push({
                             sess: {
                                 did: sess.did,
@@ -110,11 +114,10 @@ function postRepoStore(req, res) {
     const repo_body = req_body.target;
     repo_body.collection = req_body.target.collection + "Store";
     repo_body.repo = vwousu_did;
-    repo_body.rkey = post_info.uri.split("/").pop();
     repo_body.record = {
         ...req_body.target.record,
         $type: repo_body.collection,
-        originRepo: req_body.target.repo,
+        originUri: post_info.uri,
         originCid: post_info.cid
     };
 
