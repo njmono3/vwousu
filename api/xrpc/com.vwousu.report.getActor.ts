@@ -19,7 +19,7 @@ export default function GET(req: NowRequest, response: NowResponse) {
             if (res.length) {
                 response.send(res[0]);
             } else {
-                response.send({ message: "target is not found" });
+                response.send({ error: "NotFound", message: "target is not found" });
             }
         });
     return;
