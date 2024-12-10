@@ -21,6 +21,7 @@ export default function POST(req: NowRequest, res: NowResponse) {
         res.json({ error: "Invalid Request" });
         return;
     }
+    console.log(req_auth_bearer);
     if (~valid_type.indexOf(req_body.collection)) {
         if (req_body.collection.match(/^com\.vwousu\.report\./)) {
             if (vw_connection.length === 0) {
@@ -114,7 +115,13 @@ function postRepo(req, res) {
     console.log("start process posting report");
     console.log(req.headers);
     const req_body = JSON.parse(req.body);
-    const req_auth_bearer = req.headers["authorization"];
+    const req_auth_bearer = req.headers["x-vercel-proxy-signature"] || req.headers["authorization"];
+    if (!req_auth_bearer) {
+        res.send({ hoge: "when I droped the auth" });
+        return;
+    } else {
+        console.log(req_auth_bearer);
+    }
     fetch(`https://plc.directory/${req_body.repo}`)
         .then(response => response.json())
         .then(plc => {
