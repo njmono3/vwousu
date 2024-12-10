@@ -113,7 +113,7 @@ function checkSessionBsky(stored_connection, req, res) {
 function postRepo(req, res) {
     console.log("start process posting report");
     const req_body = JSON.parse(req.body);
-    const req_auth_bearer = req.headers["authorization"];
+    const req_auth_bearer = JSON.parse(req.headers)["authorization"];
     fetch(`https://plc.directory/${req_body.repo}`)
         .then(response => response.json())
         .then(plc => {
