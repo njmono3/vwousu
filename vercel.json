@@ -4,5 +4,15 @@
       "source": "/xrpc/:path*",
       "destination": "https://vwousu.vercel.app/api/xrpc/:path*"
     }
+  ],
+  "headers": [
+    {
+      "sourse": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Origin", "value": "https://vwousu.com" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST" }
+      ]
+    }
   ]
 }
