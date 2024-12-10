@@ -17,7 +17,7 @@ export default function GET(req: NowRequest, response: NowResponse) {
             console.log("finished reading");
             console.log(res);
             if (res.length) {
-                response.send(res[0]);
+                response.send(res[0].value);
             } else {
                 response.send({ error: "NotFound", message: "target is not found" });
             }
