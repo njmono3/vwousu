@@ -129,6 +129,9 @@ function postRepo(req, res) {
             })
                 .then(response => {
                     if (!response.ok) {
+                        console.log(response);
+                        console.log(req_auth_bearer);
+                        response.json().then(obj => console.log(obj));
                         throw new Error("post is rejected");
                     }
                     return response.json();
@@ -144,7 +147,7 @@ function postRepo(req, res) {
                 })
                 .catch(err => { 
                     console.log(err);
-                    res.send(err);
+                    res.send({ error: "post is rejected" });
                 });
         });
     return;
