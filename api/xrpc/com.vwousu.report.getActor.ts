@@ -3,14 +3,19 @@ import { NowRequest, NowResponse } from "@vercel/node";
 const vwousu_did = process.env.ATPROTO_DID;
 
 export default function GET(req: NowRequest, response: NowResponse) { 
+    console.log("start function");
     const { name, did, accounts } = req.query;
     const id = { name, did, accounts };
     if (!name && !did && !accounts) { 
+        console.log("cannot read identifier");
         response.send({ error: "InvalidRequest", message: "could not find actor" });
         return;
     }
+    console.log(id);
     readStoredActors(id)
         .then(res => {
+            console.log("finished reading");
+            console.log(res);
             if (res.length) {
                 response.send(res[0]);
             } else {
@@ -24,6 +29,7 @@ function readStoredActors(id, prev_res = { cursor: "no", records: [] }) {
     const return_promise =
         fetchStoredActors(prev_res.cursor)
             .then(res => {
+                console.log(res);
                 const filtered = res.records.filter(rcd => judgeActor(id, rcd.value));
                 if (filtered.length) {
                     return new Promise(rslv => rslv(filtered));
@@ -51,6 +57,7 @@ function judgeActor(id, act) {
 }
 
 function fetchStoredActors(cursor = "no") {
+    console.log("fetch store");
     const cursor_query = (cursor === "no" ? "" : `&cursor=${cursor}`);
     const res_promise = 
         fetch(`https://bsky.social/xrpc/com.atproto.repo.listRecords?repo=${encodeURIComponent(vwousu_did)}&collection=${encodeURIComponent("com.vwousu.report.actorStore")}` + cursor_query, {
