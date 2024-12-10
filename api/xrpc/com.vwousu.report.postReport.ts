@@ -1,7 +1,7 @@
 import { NowRequest, NowResponse } from "@vercel/node";
 
 const identifier_did_regexp = new RegExp(/^did:plc:[a-z0-9]{24}$/);
-const vwousu_did = "did:plc:kyso36rtx6wlziqb7t4mctzm";
+const vwousu_did = process.env.ATPROTO_DID;
 const sess_body = { identifier: vwousu_did, password: process.env.BSKY_APP_PASSWORD };
 
 const valid_type = [
