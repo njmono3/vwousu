@@ -12,15 +12,13 @@ const vw_connection = [];
 
 export default function POST(req: NowRequest, res: NowResponse) {
     console.log("Function Start");
-    const req_auth_bearer = req.headers["authorization"];
     const req_body = JSON.parse(req.body);
-    if (!req_auth_bearer && !req.body && !identifier_did_regexp.test(req_body.repo) && !req_body.record) {
+    if (!req.body.target && !identifier_did_regexp.test(req_body.target.repo) && !req_body.target.record) {
         console.log("Request is invalid.");
-        console.log({ auth: req_auth_bearer, body: req_body });
+        console.log({ body: req_body });
         res.json({ error: "Invalid Request" });
         return;
     }
-    console.log(req_auth_bearer);
     if (~valid_type.indexOf(req_body.collection)) {
         if (vw_connection.length === 0) {
             console.log("start process [report-createSess]");
