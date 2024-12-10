@@ -51,7 +51,7 @@ function fetchBskySession(req, res) {
         body: JSON.stringify(sess_body)
     })
         .then(response => {
-            if (res.status === 401) {
+            if (response.status === 401 || !response.ok) {
                 throw new Error("cannot access");
             }
             return response.json();
@@ -70,6 +70,7 @@ function fetchBskySession(req, res) {
         })
         .catch(err => {
             console.log(err);
+            res.send(err);
         });
     return;
 }
@@ -126,14 +127,24 @@ function postRepo(req, res) {
                 },
                 body: JSON.stringify(req_body)
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("post is rejected");
+                    }
+                    return response.json();
+                })
                 .then(res_json => {
-                    console.log("success connectiong [post user]");
+                    console.log("success [post user]");
                     if (req_body.collection.match(/^com\.vwousu\.report\./)) {
                         postRepoStore(req_body, res_json, res);
                     } else {
+                        console.log(res_json);
                         res.json(res_json);
                     }
+                })
+                .catch(err => { 
+                    console.log(err);
+                    res.send(err);
                 });
         });
     return;
@@ -161,9 +172,17 @@ function postRepoStore(req_body, post_info, res) {
         },
         body: JSON.stringify(repo_body)
     })
-        .then(_ => {
-        console.log("success store");
-            res.json(post_info);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("store rejected");
+            } else {
+                console.log("success store");
+                res.json(post_info);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.json(err);
         });
     return;
 }
