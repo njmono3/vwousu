@@ -13,13 +13,13 @@ const vw_connection = [];
 export default function POST(req: NowRequest, res: NowResponse) {
     console.log("Function Start");
     const req_body = JSON.parse(req.body);
+    console.log({ body: req_body });
     if (!req.body.target && !identifier_did_regexp.test(req_body.target.repo) && !req_body.target.record) {
         console.log("Request is invalid.");
-        console.log({ body: req_body });
         res.json({ error: "Invalid Request" });
         return;
     }
-    if (~valid_type.indexOf(req_body.collection)) {
+    if (~valid_type.indexOf(req_body.target.collection)) {
         if (vw_connection.length === 0) {
             console.log("start process [report-createSess]");
             fetchBskySession(req, res);
